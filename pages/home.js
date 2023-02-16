@@ -1,12 +1,19 @@
 import Navigation from "../components/navigation"
-import data from '../../db.json' assert {type: "json"}
+// import data from '../../db.json' assert {type: "json"}
+import {useState, useEffect} from '../../lib'
 import Header from "../components/header";
 import categories from "../components/categories";
 import banner from "../components/banner";
 import Footer from "../components/footer";
 
 var HomePage = function() {
-    console.log(data);
+    const [data, setData] = useState([])
+
+    useEffect(function() {
+        fetch('http://localhost:3000/books')
+        .then((res) => res.json())
+        .then((dataFetch) => setData(dataFetch))
+    }, []) // watch tham số cần thay đổi (shouldUpdate)
     return /*html*/`
     ${Header()}
     ${Navigation()}
@@ -22,12 +29,12 @@ var HomePage = function() {
                 return /*html*/`
                 <a href="/products/${book.id}">
                 <div >
-                <img src="${book.images[0].base_url}" alt=""  width="200px" height="200px">
-             </div>
-            <div>
-                <img src="img/tikinow.png" alt="">
-                <p class="text-[#00AB56] text-[11px]">GIAO SIÊU TỐC 2H</p>
-                <h3 class="">${book.name}</h3>
+                    <img src="${book.images?.[0].base_url}" alt=""  class="w-[200px] h-[200px] hover:scale-125 hover:delay-300">
+                 </div>
+                <div>
+                    <img src="img/tikinow.png" alt="">
+                    <p class="text-[#00AB56] text-[11px]">GIAO SIÊU TỐC 2H</p>
+                    <h3 class="">${book.name}</h3>
                 <div class="flex gap-2 items-center">
                     <span class="flex justify-center"><img src="img/sao.svg" alt="" class="w-[12px]">
                         <img src="img/sao.svg" alt="" class="w-[12px]">
@@ -40,10 +47,10 @@ var HomePage = function() {
                     <span class="px-1">${book.current_seller.price} <span class="underline">đ</span></span>
                     <span class="border px-1 text-[11px] border-[#FF424E]">-23%</span>
                 </div>
-            </div>
+                </div>
                 </a>
                 `
-            }).join('')}
+            }).join('')} 
         <div>
     </div>
     </div>

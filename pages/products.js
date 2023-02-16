@@ -1,12 +1,18 @@
 import Navigation from "../components/navigation";
-import data from '../../db.json' assert {type: 'json'}
+// import data from '../../db.json' assert {type: 'json'}
 import Header from "../components/header";
 import Footer from "../components/footer";
+import { useEffect, useState } from "../../lib";
 
 const ProductPage = function(id) {
-    const book = data.find(function(item) {
-        return item.id == id
-    })
+    // const book = data.find(function(item) {
+    //     return item.id == id
+    // })
+    const [book, setBook] = useState({})
+    useEffect(() => {
+        fetch(` http://localhost:3000/books/${id}`).then((res) => res.json())
+        .then((data) => setBook(data))
+    }, [])
     return /*html*/`
     ${Header()}
     ${Navigation()}
@@ -14,14 +20,14 @@ const ProductPage = function(id) {
     <div class="grid grid-cols-[444px,auto] gap-8">
         <div class="border-r px-8">
             <div class="text-center px-8">
-                <img src="${book.images[0].base_url}" alt="" width="444" height="444">
+                <img src="${book.images?.[0].base_url}" alt="" width="444" height="444">
             </div>
             <div class="grid grid-cols-5 gap-3 my-3">
-                <img src="/img/anh1.png" alt="" width="64" height="64">
-                <img src="/img/anh2.png" alt="" width="64" height="64">
-                <img src="/img/anh3.png" alt="" width="64" height="64">
-                <img src="/img/anh4.png" alt="" width="64" height="64">
-                <img src="/img/anh5.png" alt="" width="64" height="64">
+                <img src="${book.images?.[0].base_url}" alt="" width="64" height="64">
+                <img src="${book.images?.[0].base_url}" alt="" width="64" height="64">
+                <img src="${book.images?.[0].base_url}" alt="" width="64" height="64">
+                <img src="${book.images?.[0].base_url}" alt="" width="64" height="64">
+                <img src="${book.images?.[0].base_url}" alt="" width="64" height="64">
             </div>
         </div>
         <div>
@@ -43,7 +49,7 @@ const ProductPage = function(id) {
                 <span class="text-[#787878] text-[11px]">Đã bán 1000+</span>
             </div>
             <div class="text-[#FF424E] px-5 py-5 border-b">
-                <span class="px-1 text-[32px]">${book.current_seller.price}<span class="underline">đ</span></span>
+                <span class="px-1 text-[32px]">${book.current_seller?.price}<span class="underline">đ</span></span>
                 <span class="px-1 text-[13px] text-[#808089]">${book.original_price}<span class="underline">đ</span></span>
                 <span class="border px-1 text-[14px] border-[#FF424E]">-23%</span>
             </div>
@@ -80,7 +86,7 @@ const ProductPage = function(id) {
         <h2 class="text-[20px] font-semibold">Sản phẩm tương tự</h2>
         <div class="grid grid-cols-6">
             <div>
-                <img src="/img/anh6.png" alt="" class="w-full">
+                <img src="/img/anh1.png" alt="" class="w-full">
                 <div>
                     <h3 class="">Càng Kỷ Luật, Càng Tự Do</h3>
                     <div class="flex gap-2 items-center">
@@ -103,34 +109,14 @@ const ProductPage = function(id) {
     <section class="max-w-7xl px-10 mx-auto my-5">
         <h2 class="text-[20px] my-5">Thông tin chi tiết</h2>
         <table>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Công ty phát hành</th>
-                <td class="w-[660px] px-5">Bloom Books</td>
+            ${book.specifications?.[0].attributes.map(function (item){
+                return /*html*/`
+                <tr>
+                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">${item.name}</th>
+                <td class="w-[660px] px-5">${item.value}</td>
             </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Ngày xuất bản</th>
-                <td class="bg-[#FAFAFA] w-[660px] px-5">2020-09-01 00:00:00</td>
-            </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Kích thước</th>
-                <td class="w-[660px] px-5">14.5 x 20 cm</td>
-            </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Dịch Giả</th>
-                <td class="bg-[#FAFAFA] w-[660px] px-5">Tuyết Mai</td>
-            </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Loại bìa</th>
-                <td class="w-[660px] px-5">Bìa mềm</td>
-            </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Số trang</th>
-                <td class="bg-[#FAFAFA] w-[660px] px-5">288</td>
-            </tr>
-            <tr>
-                <th class="w-[220px] text-[#4F4F4F] bg-[#EFEFEF] font-normal">Nhà xuất bản</th>
-                <td class="w-[660px] px-5">Nhà Xuất Bản Thế Giới</td>
-            </tr>
+                `
+            }).join('')}
         </table>
     </section>
 
